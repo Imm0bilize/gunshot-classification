@@ -1,0 +1,22 @@
+defaults:
+  - _self_
+  - models: vgg19
+  - optims: adam
+  - losses: bce
+  - augmentations: default
+
+preprocessing:
+  img_padding_length: 2000
+  mel_params:
+    melspec_sample_rate: 16000
+    melspec_n_mels: 128
+    melspec_n_fft: 2048
+    melspec_hop_length: 128
+    melspec_f_min: 32
+    melspec_f_max: 16384
+
+hyperparams:
+  seed: 777
+  n_epochs: 50
+  lr: 1e-4
+  batch_size: 32
