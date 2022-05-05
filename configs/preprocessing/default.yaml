@@ -1,0 +1,9 @@
+img_padding_length: 2000
+
+mel_params:
+  sample_rate: 16000
+  n_mels: 128
+  n_fft: 2048
+  hop_length: 128
+  f_min: 32
+  f_max: 16384

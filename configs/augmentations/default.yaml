@@ -1,0 +1,26 @@
+freq_mask_param: 40
+time_mask_param: 20
+
+highpass:
+  cutoff_range:
+    - 100
+    - 500
+  probability: 0.2
+
+lowpass:
+  cutoff_range:
+    - 5000
+    - 7000
+  probability: 0.2
+
+noize:
+  volume_range:
+    - 1  # percent
+    - 10
+  probability: 0.8
+
+gain:
+  distortion_range:
+    - 5
+    - 20
+  probability: 0.75

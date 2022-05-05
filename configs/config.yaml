@@ -1,0 +1,13 @@
+defaults:
+  - _self_
+  - models: vgg19
+  - optims: adam
+  - losses: bce
+  - augmentations: default
+  - preprocessing: default
+
+hyperparams:
+  seed: 777
+  n_epochs: 50
+  lr: 1e-4
+  batch_size: 32
