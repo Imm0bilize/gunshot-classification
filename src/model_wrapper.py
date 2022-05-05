@@ -14,7 +14,7 @@ class ModelWrapper(pl.LightningModule):
         self.print(f"Instantiated loss function <{self._loss_fn.__class__.__name__}>")
 
         self.train_accuracy = torchmetrics.Accuracy()
-        self.loss_accurancy = torchmetrics.Accuracy()
+        self.loss_accuracy = torchmetrics.Accuracy()
 
     def forward(self, x):
         if self.is_need2rgb:
