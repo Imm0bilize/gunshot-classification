@@ -1,0 +1,2 @@
+hydra-core wandb pytorch-lightning torchaudio python-dotenv
+docker run -it --shm-size=4gb  --rm --gpus all  -v /home/mkiit/Workspace/vedernikov/gunshot-detection:/train pytorch/pytorch:1.9.1-cuda11.1-cudnn8-runtime

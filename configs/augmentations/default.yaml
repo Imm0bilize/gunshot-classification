@@ -10,7 +10,7 @@ highpass:
 lowpass:
   cutoff_range:
     - 5000
-    - 7000
+    - 9000
   probability: 0.2
 
 noize:

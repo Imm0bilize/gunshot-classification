@@ -9,7 +9,7 @@ from src.utils import AugmentationNoise
 
 
 class GunShotDataset(Dataset):
-    def __init__(self, paths_to_audio, augmentation_cfg, preproc_cfg, is_train, augmentation_noize=None):
+    def __init__(self, paths_to_audio, augmentation_cfg, preproc_cfg, is_train, is_need2rgb, augmentation_noize=None):
         assert len(paths_to_audio), "The list of audio paths is empty"
         self.paths_to_audio = paths_to_audio
 
@@ -44,6 +44,7 @@ class GunShotDataset(Dataset):
 
             *augmentation,
         )
+        self.is_need2rgb = is_need2rgb
 
     def __len__(self):
         return len(self.paths_to_audio)
@@ -53,15 +54,12 @@ class GunShotDataset(Dataset):
         # if np.random.rand() > 1.0 - self.augmentation_cfg.noize.probability:
         #     alpha = np.random.randint(*self.augmentation_cfg.noize.volume_range) / 100
         #     wave = self.aug_noize(wave, alpha)
-        if np.random.rand() > 1.0 - self.augmentation_cfg.gain.probability:
-            power = np.random.randint(*self.augmentation_cfg.gain.distortion_range) / 10
-            wave = torchaudio.functional.gain(wave, power)
         if np.random.rand() > 1.0 - self.augmentation_cfg.highpass.probability:
             freq = np.random.randint(*self.augmentation_cfg.highpass.cutoff_range)
             wave = torchaudio.functional.highpass_biquad(wave, sr, cutoff_freq=freq)
-        if np.random.rand() > 1.0 - self.augmentation_cfg.lowpass.probability:
-            freq = np.random.randint(*self.augmentation_cfg.lowpass.cutoff_range)
-            wave = torchaudio.functional.lowpass_biquad(wave, sr, cutoff_freq=freq)
+        if np.random.rand() > 1.0 - self.augmentation_cfg.gain.probability:
+            power = np.random.randint(*self.augmentation_cfg.gain.distortion_range) / 10
+            wave = torchaudio.functional.gain(wave, power)
         return wave
 
     def _normalize(self, spec: torch.Tensor) -> torch.Tensor:
@@ -79,6 +77,7 @@ class GunShotDataset(Dataset):
 
     def __getitem__(self, idx):
         wave, sr = torchaudio.load(filepath=self.paths_to_audio[idx], normalize=True)
+        # print(wave.shape)
         wave = self._stereo2mono(wave)
         if self.is_train:
             wave = self._apply_augmentation(wave, sr)
@@ -88,6 +87,9 @@ class GunShotDataset(Dataset):
         mel_spectrogram = self._normalize(torch.log(self._preprocessing(wave) + self.eps))
         image[0, :, :mel_spectrogram.size(2)] = mel_spectrogram[:, :, :self.preproc_cfg.img_padding_length]
 
+        if self.is_need2rgb:
+            image = image.repeat(3, 1, 1)
+        print(image.shape)
         y = torch.tensor(1, dtype=torch.float32) if self.paths_to_audio[idx].find('not') == -1 \
             else torch.tensor(0, dtype=torch.float32)
         return image, torch.unsqueeze(y, -1)

@@ -1,13 +1,15 @@
 defaults:
   - _self_
-  - models: vgg19
+  - models: MobileNetV2
   - optims: adam
   - losses: bce
+  - activation_fn: sigmoid
   - augmentations: default
   - preprocessing: default
 
 hyperparams:
+  val_split: 0.25
   seed: 777
-  n_epochs: 50
-  lr: 1e-4
-  batch_size: 32
+  n_epochs: 20
+  lr: 0.5e-4
+  batch_size: 12
